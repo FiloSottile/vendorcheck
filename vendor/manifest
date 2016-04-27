@@ -1,0 +1,40 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/kisielk/gotool",
+			"repository": "https://github.com/kisielk/gotool",
+			"vcs": "git",
+			"revision": "58a7a198f2ec6ea7af221fd216e7f559d663ce02",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/ast/astutil",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "53006ac4c204faf590b60aaeda0f13d0d3361927",
+			"branch": "master",
+			"path": "/go/ast/astutil",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/buildutil",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "53006ac4c204faf590b60aaeda0f13d0d3361927",
+			"branch": "master",
+			"path": "/go/buildutil",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/go/loader",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "53006ac4c204faf590b60aaeda0f13d0d3361927",
+			"branch": "master",
+			"path": "/go/loader",
+			"notests": true
+		}
+	]
+}
