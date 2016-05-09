@@ -31,6 +31,10 @@ func main() {
 	conf.AllowErrors = true
 	conf.TypeChecker.Error = func(error) {}
 	for _, p := range gotool.ImportPaths(args) {
+		if strings.Index(p, "/vendor/") != -1 {
+			// ignore vendored packages (if they are not imported by real ones)
+			continue
+		}
 		if *tests {
 			conf.ImportWithTests(p)
 		} else {
