@@ -46,27 +46,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	initial := make(map[*loader.PackageInfo]bool)
-	for _, pi := range prog.InitialPackages() {
-		initial[pi] = true
-	}
-
-	var packages []*loader.PackageInfo
+	exitCode := 0
 	for _, pi := range prog.AllPackages {
-		if initial[pi] {
-			continue
-		}
 		if len(pi.Files) == 0 {
 			continue // virtual stdlib package
 		}
-		filename := prog.Fset.File(pi.Files[0].Pos()).Name()
-		if !strings.HasPrefix(filename, build.Default.GOROOT) || !isStandardImportPath(pi.Pkg.Path()) {
-			packages = append(packages, pi)
-		}
-	}
 
-	exitCode := 0
-	for _, pi := range packages {
+		filename := prog.Fset.File(pi.Files[0].Pos()).Name()
+		if strings.HasPrefix(filename, build.Default.GOROOT) && isStandardImportPath(pi.Pkg.Path()) {
+			continue
+		}
+
+		internal := false
+		for _, ini := range prog.InitialPackages() {
+			if ini == pi || strings.HasPrefix(pi.Pkg.Path(), ini.Pkg.Path()+"/") {
+				internal = true
+				break
+			}
+		}
+		if internal {
+			continue
+		}
+
 		if strings.Index(pi.Pkg.Path(), "/vendor/") == -1 {
 			fmt.Println("[!] dependency not vendored:", pi.Pkg.Path())
 			exitCode = 1
