@@ -21,12 +21,16 @@ func main() {
 	}
 	tests := flag.Bool("t", false, "also check dependencies of test files")
 	flag.Parse()
+	args := flag.Args()
+	if len(args) == 0 {
+		args = append(args, "./...")
+	}
 
 	var conf loader.Config
 	conf.ParserMode = parser.ImportsOnly
 	conf.AllowErrors = true
 	conf.TypeChecker.Error = func(error) {}
-	for _, p := range gotool.ImportPaths(flag.Args()) {
+	for _, p := range gotool.ImportPaths(args) {
 		if *tests {
 			conf.ImportWithTests(p)
 		} else {
