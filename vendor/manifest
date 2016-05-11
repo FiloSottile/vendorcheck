@@ -35,6 +35,15 @@
 			"branch": "master",
 			"path": "/go/loader",
 			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/tools/refactor/importgraph",
+			"repository": "https://go.googlesource.com/tools",
+			"vcs": "git",
+			"revision": "c86fe5956d4575f29850535871a97abbd403a145",
+			"branch": "master",
+			"path": "/refactor/importgraph",
+			"notests": true
 		}
 	]
 }
