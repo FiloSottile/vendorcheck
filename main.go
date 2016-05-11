@@ -10,8 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kisielk/gotool"
-
+	"golang.org/x/tools/go/buildutil"
 	"golang.org/x/tools/go/loader"
 	"golang.org/x/tools/refactor/importgraph"
 )
@@ -28,11 +27,17 @@ func main() {
 	if len(args) == 0 {
 		args = append(args, "./...")
 	}
-	args = gotool.ImportPaths(args)
+	for i := range args {
+		args[i] = absImportPath(args[i])
+	}
+	var paths []string
+	for p := range buildutil.ExpandPatterns(&build.Default, args) {
+		paths = append(paths, p)
+	}
 	if *unused {
-		orphan(args)
+		orphan(paths)
 	} else {
-		missing(args, *tests)
+		missing(paths, *tests)
 	}
 }
 
@@ -91,7 +96,6 @@ func orphan(args []string) {
 	_, clients, _ := importgraph.Build(&build.Default)
 	exitCode := 0
 	for _, p := range args {
-		p = absImportPath(p)
 		if strings.Index(p, "/vendor/") == -1 {
 			continue
 		}
@@ -117,12 +121,17 @@ func absImportPath(path string) string {
 	if !build.IsLocalImport(path) {
 		return path
 	}
+	wildcard := ""
+	if strings.HasSuffix(path, "/...") {
+		wildcard = "/..."
+		path = path[:len(path)-len("/...")]
+	}
 	pwd, _ := os.Getwd()
 	fullPath := filepath.Clean(filepath.Join(pwd, path))
 	for _, root := range build.Default.SrcDirs() {
 		if strings.HasPrefix(fullPath, root+string(filepath.Separator)) {
 			rel, _ := filepath.Rel(root, fullPath)
-			return filepath.ToSlash(rel)
+			return filepath.ToSlash(rel) + wildcard
 		}
 	}
 	panic("can't run on . or ./... outside $GOPATH")
